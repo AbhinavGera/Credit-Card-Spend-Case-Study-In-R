@@ -175,25 +175,7 @@ sum(is.na(cat_vars))
 
 plot_scatterplot(num_vars,by ='total_spent',title = "Scatterplot of each feature w.r.t target variable")
 
-# Creating a custom function to check which transformation gives best 
-# correlation with the target variable
 
-trans_func<-function(x){
-        log10_trans= cor(num_vars$total_spent,log10(1+x))
-        sqrt_trans= cor(num_vars$total_spent,sqrt(x))
-        best_trans= ifelse(log10_trans>sqrt_trans,"log10","sqrt_trans")
-        return(c(log10_trans= log10_trans,sqrt_trans= sqrt_trans,best_trans= best_trans))
-} 
-
-# applying the transformation function
-trans_coeff<- data.frame(apply(num_vars,2,trans_func))
-
-# Applying transformation to a few variables
-num_vars$creddebt<- sqrt(num_vars$creddebt)
-num_vars$othdebt<-log(1+num_vars$othdebt)
-num_vars$longten<-log10(1+num_vars$longten)
-num_vars$cardmon<-log10(1+num_vars$cardmon)
-num_vars$ln_total_spent<-NULL
 # ------------Analysing Categorical variables--------------------------------
 #------assigning another variable to store the target variable----#
 target_var<-num_vars$total_spent
@@ -211,8 +193,6 @@ cat_vars$target_var<- target_var
 # ANOVA model to measure significance of variables
 a1<-aov(formula <- target_var ~ ., data = cat_vars)
 summary(a1)
-
-
 # Selecting the significant categorical variables from anova analysis
 
 imp_cat<- cat_vars[,c("region","gender","agecat",
